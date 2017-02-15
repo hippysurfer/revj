@@ -44,35 +44,35 @@ FROM
  JOIN actor ON 
   film_actor.actor_id = actor.actor_id 
 GROUP BY film.film_id; """
-	
+
 DEFALGO = 'neato'
-	
+
 DOTFILE = 'current.dot'
 GIFFILE = 'current.gif'
+PNGFILE = 'export.png'
 DIRGUNIX = 'dir.g'
 DIRGDOS = 'dir_dos.g'
 
 DEF_PNG = 'sakila.png'
 
-WELLCOME = 'Hi there! Reverse Snowflake Join works correctly' 
+WELLCOME = 'Hi there! Reverse Snowflake Join works correctly'
 
 OUTERJOINCOLOR = 'orange'
 OUTERJOINARROW = 'dot'
 
 CLUSTERCOLORS = ['lightgray', 'antiquewhite', 'aquamarine', 'cadetblue', 'coral',
-	'darkorange']
+                 'darkorange']
 
-
-#Edit this path !! Keep in sync with the one in cherry.conf!!
+# Edit this path !! Keep in sync with the one in cherry.conf!!
 STATICDIR = os.getcwd() + '/static'
 
 try:
-	os.mkdir(STATICDIR)
+    os.mkdir(STATICDIR)
 except:
-	pass
+    pass
 
 """this func runs once. chooses file with correct line ending for gvpr"""
-x=platform.win32_ver()
+x = platform.win32_ver()
 globals()['DIRG'] = DIRGUNIX
 if x[0] != '':
-	globals()['DIRG'] = DIRGDOS
+    globals()['DIRG'] = DIRGDOS

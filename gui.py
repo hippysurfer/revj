@@ -51,6 +51,21 @@ def dotRunner(algo='one', dist=1):
     os.system(cmd)
 
 
+def exportRunner(algo='one', dist=1):
+    """ PhotoImage supports only GIF format"""
+    cmd = ''
+    if 'one' in algo:
+        # if there is some problem in the script for gvpr
+        cmd = 'dot -Grankdir=LR -Granksep=%s -Edir=none -T png -o "%s" "%s"' % \
+              (dist, PNGFILE, DOTFILE)
+    else:
+        cmd = ('%s "%s" | gvpr -f"%s" | dot -Grankdir=LR -Granksep=%s -Edir=none '
+               '-T gif -o "%s"') % (algo, DOTFILE, DIRG, dist, PNGFILE)
+
+    print(cmd)
+    os.system(cmd)
+
+
 class GUIApp:
     def __init__(self, master):
         pan = PanedWindow(orient=VERTICAL)
@@ -97,6 +112,10 @@ class GUIApp:
                           command=self.gen)
         self.btn.pack(expand=False, side=LEFT)
 
+        self.exbtn = Button(middleDummy, text="Export Diagram",
+                            command=self.export)
+        self.exbtn.pack(expand=False, side=LEFT)
+
         pan.add(decor)
 
         # resizable frame for scrollable diagram
@@ -133,12 +152,19 @@ class GUIApp:
             self.graph = PhotoImage()
         self.canvas.create_image(0, 0, image=self.graph, anchor=NW)
 
-    def gen(self, wellcome=''):
+    def gen_dot(self, wellcome=''):
         deleteFiles()
         f = open('current.dot', 'w')
         try:
             if wellcome == '':
                 s = self.sqlInput.get(1.0, END)
+                a = []
+                for l in s.splitlines():
+                    if l[0:3].lower() == 'sql':
+                        a.append(l[3:])
+                    else:
+                        a.append(l)
+                s = "\n".join(a)
                 s = query2Dot(s, self.varAlgo.get())
             else:
                 s = """graph
@@ -161,9 +187,18 @@ class GUIApp:
         # algo moved to subGraphDotRunner()
         # a = self.varAlgo.get()
 
+    def gen(self, wellcome=''):
+
+        self.gen_dot(wellcome)
         s = dotRunner('one-pass', self.varDist.get())
 
         self.load()
+
+    def export(self, wellcome=''):
+
+        exportRunner('one-pass', self.varDist.get())
+
+
 
 
 # this is needed for revj initialization
