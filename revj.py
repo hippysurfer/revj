@@ -225,7 +225,8 @@ def initGlobalGrammar():
 
     # includes funcs without params ex: curdate()
     globals()["filterConst"] = intNum | quotedConst | \
-                               Group(ident + Literal("(") + Literal(")")) | \
+   # fix after Pyparsing upgrade  
+   #                           Group(ident + Literal("(") + Literal(")")) | \
                                bind
 
     globals()["inConstruct"] = "(" + reCompar + "|" + r"\s" + '[iI][nN]' + reWS + ")"
@@ -1527,7 +1528,7 @@ class SingleSelect:
         # it could do keys() part of joins, but usually joins require
         # _several_ tables. For now, the self joins have to be written by hand
         for s in 'aggregs filters colAliases havings'.split():
-            for j in eval('self.' + s):
+            for j in eval('self.' + s).copy:
                 if '.' not in j:
                     cmd = 'self.%s[alias + "%s"] = self.%s.pop("%s")' % \
                           (s, j, s, j)
